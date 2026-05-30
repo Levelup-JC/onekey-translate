@@ -11,7 +11,7 @@ Save **40%+ tokens** when using Claude Code / ChatGPT by interacting in English 
 
 English is the most token-efficient language for LLMs. But most of us think and speak in Chinese. OneKey Translate bridges this gap: **voice input in Chinese → one key → English to LLM → one key → Chinese to read.**
 
-> See [AI Token Pricing Research](https://github.com/jas0ncong/onekey-translate/blob/main/docs/token-efficiency.md) for detailed data.
+> See [AI Token Pricing Research](https://github.com/Levelup-JC/onekey-translate/blob/main/docs/token-efficiency.md) for detailed data.
 
 ## How It Works
 
@@ -33,13 +33,13 @@ Output Flow (EN → ZH):
 ## Install (30 seconds)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jas0ncong/onekey-translate/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Levelup-JC/onekey-translate/main/install.sh | bash
 ```
 
 Or manually:
 
 ```bash
-git clone https://github.com/jas0ncong/onekey-translate.git
+git clone https://github.com/Levelup-JC/onekey-translate.git
 cd onekey-translate
 bash install.sh
 ```
