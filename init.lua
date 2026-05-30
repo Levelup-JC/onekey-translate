@@ -5,7 +5,8 @@
 --
 -- Engine: Google Translate free API (with Apple Shortcuts fallback)
 
-local PROXY = "http://127.0.0.1:7897"  -- set to nil if no proxy needed
+-- Set to your proxy if needed (e.g. "http://127.0.0.1:7890"), or nil for no proxy
+local PROXY = nil
 
 local function ks(mods, k)
   hs.eventtap.keyStroke(mods or {}, k, 0)

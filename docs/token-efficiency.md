@@ -1,192 +1,37 @@
-# AI Token 计价方式 — 现有研究成果
+# Why English? — Token Efficiency Data
 
-## 一、Token 基础概念与计价机制
+## Chinese vs English Token Consumption
 
-### 1.1 Token 的定义
+| Metric | English | Chinese |
+|--------|---------|---------|
+| Per unit text | 1 word ≈ 1–2 tokens | 1 character ≈ 1–1.5 tokens |
+| 1000 tokens ≈ | 750 words | 650 characters |
+| Compression | High (space-delimited, BPE-optimized) | Lower (no spaces, character-level split) |
 
-Token 是大模型处理文本的最小单位，介于"字符"和"单词"之间。由分词器（Tokenizer）通过 BPE（Byte Pair Encoding）或 SentencePiece 算法将文本拆解为编码片段。
+**Same meaning, Chinese consumes 40%–100% more tokens than English.**
 
-### 1.2 计费公式
+## Why This Matters
 
-```
-总费用 = 输入Token数 x 输入单价 + 输出Token数 x 输出单价
-```
+LLMs charge by token (input + output), and output tokens cost 2–5x more than input tokens.
 
-- 输入 Token：用户消息、系统提示、上下文历史等所有传入内容
-- 输出 Token：模型生成的所有文本
-- 输出 Token 单价通常是输入的 **2~5 倍**（自回归生成计算量更大）
+A typical Claude Code session:
+- Chinese: ~10,000 tokens per exchange
+- English: ~6,000 tokens per exchange
+- **You save ~40% every time you use English**
 
-### 1.3 中英文 Token 效率差异
+## 2025 LLM Pricing Reference
 
-| 指标 | 英文 | 中文 |
-|------|------|------|
-| 每单位文本 | 1 个单词 ≈ 1~2 Token | 1 个汉字 ≈ 1~1.5 Token |
-| 1000 Token 对应 | ≈ 750 个英文单词 | ≈ 650 个中文字符 |
-| 压缩效率 | 高（空格分隔，BPE 优化好） | 较低（无空格，逐字拆分） |
+| Model | Input ($/1M tokens) | Output ($/1M tokens) |
+|-------|---------------------|----------------------|
+| GPT-4o | $5.00 | $20.00 |
+| Claude Opus 4.5 | $5.00 | $25.00 |
+| Claude Sonnet 4 | $3.00 | $15.00 |
+| Gemini 2.5 Flash | $0.15 | $0.60 |
+| DeepSeek V3.2 | $0.28 | $0.42 |
 
-**关键发现**：同一段信息，中文消耗的 Token 数比英文多 **40%~100%**。
+With Chinese, you're paying 40%–100% more for the same conversation.
 
----
+## Sources
 
-## 二、2025 年主流模型定价全景
-
-### 2.1 国际模型（美元/百万 Token）
-
-| 模型 | 输入价格 | 输出价格 | 备注 |
-|------|---------|---------|------|
-| GPT-5 | $1.25 | $10.00 | 旗舰推理 |
-| GPT-5 Mini | $0.25 | $2.00 | 性价比之选 |
-| GPT-5 Nano | $0.05 | $0.40 | 最便宜，仅简单任务 |
-| GPT-4o | $5.00 | $20.00 | 多模态 |
-| Claude Opus 4.5 | $5.00 | $25.00 | Anthropic 旗舰 |
-| Claude Sonnet 4 | $3.00 | $15.00 | 编码最佳 |
-| Claude Haiku 3 | $0.25 | $1.25 | 低成本高吞吐 |
-| Gemini 2.5 Pro | $1.25~2.50 | $10~15 | 1M 上下文 |
-| Gemini 2.5 Flash | $0.15 | $0.60~3.50 | 性价比之王 |
-| DeepSeek V3.2 | $0.28 | $0.42 | 价格屠夫 |
-
-### 2.2 国产模型（元/百万 Token）
-
-| 模型 | 输入价格 | 输出价格 |
-|------|---------|---------|
-| GLM-4.5 | 0.8 | 2 |
-| 豆包-Pro-32K | 0.8 | 2 |
-| DeepSeek-V3 | 0.6 | 2.19 |
-| 通义千问Max | 20 | 60 |
-| 文心一言4.0 | 12 | 12 |
-
-**关键发现**：国产模型价格较 GPT-4 便宜 **90%~95%**。DeepSeek 缓存命中价低至 $0.01/1M input tokens。
-
-### 2.3 市场格局（2025 年中 API 调用量）
-
-- Google Gemini：43.1% 市场份额（价格+速度优势）
-- Anthropic Claude：~25%（代码质量领先，编程占 44.5%）
-- DeepSeek：第三（免费+付费生态粘性）
-- OpenAI：第四（定价高+访问限制失地）
-
----
-
-## 三、目前使用 AI 的主要方式
-
-| 方式 | 月成本 | 门槛 | 适用场景 |
-|------|--------|------|----------|
-| 官方订阅（Plus/Pro） | $20~25/月 | 零 | 个人日常使用 |
-| 官方 API（按量） | $5~500+/月 | 需开发 | 产品集成 |
-| 中转 API | 官方 30%~100% | 低~中 | 国内最实用方案 |
-| 客户端工具（Cursor/Claude Code） | 工具订阅费 | 零~低 | 编程场景 |
-
-**关键发现**：国内用户最大障碍是境外信用卡支付。中转 API 通过支付宝/微信解决了这个问题。
-
----
-
-## 四、API 中转站筛选体系
-
-### 4.1 四大评估维度
-
-- **技术**：P99 延迟、并发支持、模型版本更新频率
-- **稳定性**：72h 压力测试错误率、熔断机制
-- **安全性**：传输加密、权限管控、合规认证
-- **功能完整性**：多模态支持、SDK 覆盖
-
-### 4.2 好平台 vs 危险信号
-
-| 好平台标志 | 危险信号 |
-|-----------|---------|
-| 明确 SLA 承诺（≥99%） | 价格极低（倍率 <0.5） |
-| 价格透明，倍率 1.5~2.5 | 无联系方式或客服不响应 |
-| 支持开票、退款 | 频繁调价、突然改套餐 |
-| 完整 API 文档和 SDK | 长期不更新模型版本 |
-| 活跃用户社区 | 网站简陋、无隐私政策 |
-
-### 4.3 场景选型速查
-
-| 你的场景 | 首选 | 备选 |
-|----------|------|------|
-| 企业生产 | SiliconFlow / KIE AI | LiteLLM 自建 |
-| 个人项目 | 能用 AI API | 88code（包月） |
-| 快速测试 | PlumageChat + OpenRouter | RouterPark |
-| 数据敏感 | LiteLLM 私有部署 | 官方 API 直连 |
-| Claude Code | Help AIO 比价 | Code-Switch-R 多站降级 |
-
----
-
-## 五、中转站避坑指南（核心风险）
-
-### 5.1 模型掺假/降级（学术实锤）
-
-论文 arXiv:2603.01919 对 17 个 Shadow API 服务审计：
-- **45.83%** 的模型端点未通过身份指纹验证
-- 三类欺诈：替换型（换版本）、挂羊头卖狗肉型（返回 GLM-4-9B 等小模型）、低价转卖型
-- 某中转站 Gemini-2.5-flash 在 MedQA 从官方 **83.82% 暴跌至 37.00%**
-- 约 56 篇学术论文因引用 Shadow API 需重做，涉及成本 $11.5~14 万
-
-### 5.2 恶意代码注入（安全实锤）
-
-论文 "Your Agent Is Mine"（Chaofan Shou 团队）：
-- 暗访 **428 个中转站**，当场抓获 **26 个**有恶意代码注入行为
-- 攻击手段：依赖替换注入、反向 Shell 植入、条件投毒、凭证窃取
-- 真实案例：有人因恶意节点，以太坊私钥泄露，**几十万美元瞬间蒸发**
-
-### 5.3 跑路/庞氏骗局
-
-- 套壳 App 用低价或盗刷 API Key 维持，并发上量后切到小模型
-- 拉新收入覆盖不了开销时直接跑路
-- 信用卡盗刷获取零成本 API 额度 → 官方封号 → 拔网线
-
-### 5.4 开源基础设施生态
-
-| 工具 | GitHub Stars | 功能 |
-|------|-------------|------|
-| One API | 31.2k | API 聚合管理，一键 Docker 部署 |
-| New API | 24k | 增加在线支付、智能路由 |
-| Sub2API | 9.5k | 订阅号转 API |
-
-三者合计 64,000+ 星，"任何人几小时内就能搭建一个功能完整的 API 中转服务"——这也是乱象的根源。
-
-### 5.5 30 秒快速检测法（社区智慧）
-
-- 输入 `5, 15, 77, 19, 53, 54` 让模型排序
-  - 真 Claude → 几乎每次都答 77
-  - 真 GPT → 经常答 162（求和）
-  - 连续 10 次结果剧烈波动 → 假
-- 发 "hi"，如果 `input_tokens` 超过 200 → 90% 是假的（塞了大量隐藏 prompt）
-- 不支持 Function Calling / 图片识别 / 长上下文不稳定 → 假
-
----
-
-## 六、当前最可靠的聚合平台
-
-### 国际聚合器
-
-| 平台 | 模型数 | 费用 | 支付 | 特点 |
-|------|--------|------|------|------|
-| OpenRouter | 400+ (60+ 供应商) | 5.5% 充值费 + 5% BYOK | 卡/加密货币 | ZDR 零数据保留 |
-| Together AI | 多模型 | 按量 | 卡 | 批量处理优化 |
-| AWS Bedrock | 多供应商 | 按量 + 传输费 | AWS 账单 | 企业 IAM 合规 |
-
-### 国内可用
-
-| 平台 | 支付 | 特点 |
-|------|------|------|
-| SiliconFlow（硅基流动） | 支付宝/微信 | 企业级、国内外模型全覆盖 |
-| DeepBricks / n1n.ai | 对公转账 | 1:1 RMB:USD、增值税发票 |
-| 能用 AI API | 支付宝/微信 | 148+ 模型，价格低于官方 30%~50% |
-
----
-
-## 七、待研究/未确定的问题
-
-1. **stockmcp 在 VSCode 原生二进制环境下的兼容性**——Python MCP server 能否在 native binary 下正常启动
-2. **中转站的实时可用率监控**——各平台 real-time 状态和数据
-3. **中文 Token 在不同 tokenizer 下的精确消耗**——OpenAI vs Anthropic vs Google 的差异量化
-4. **2025 年下半年新平台**——Help AIO 等比价工具的准确性和覆盖面更新
-
----
-
-## 八、核心结论框架
-
-1. **Token 是计费货币**：输入+输出 Token 总量收费，输出 2~5 倍于输入，中文成本高 40%~100%
-2. **2025 是价格战年**：国产模型降至 $0.1/百万 Token 级，Gemini Flash 是西方性价比之王
-3. **中转站不是不能用，而是要用对方法**：1 主 2 备架构 + 自动降级 + 不超存金额
-4. **安全第一**：代码执行场景绝对不用中转站 Key，纯文字场景可接受
-5. **检测先行**：接入前必做 30 秒照妖镜测试 + input_tokens 异常检测
+- Anthropic, OpenAI, Google official pricing pages (2025)
+- BPE tokenizer analysis: OpenAI tiktoken, Anthropic tokenizer
